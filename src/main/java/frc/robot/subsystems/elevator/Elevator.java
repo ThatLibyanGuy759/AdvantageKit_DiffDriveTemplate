@@ -23,7 +23,7 @@ import org.littletonrobotics.junction.Logger;
  * Elevator subsystem using AdvantageKit IO pattern.
  * This subsystem can work with real hardware or simulation depending on the IO implementation provided.
  */
-public class Elevator  {
+public class Elevator extends SubsystemBase {
   private final ElevatorIO io;
   private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
@@ -35,6 +35,27 @@ public class Elevator  {
 
   public Elevator(ElevatorIO io) {
     this.io = io;
+  }
+
+  /**
+   * Directly command the elevator in open loop voltage.
+   */
+  public void setVoltage(double volts) {
+    io.setVoltage(volts);
+  }
+
+  /**
+   * Directly command the elevator to a closed-loop position.
+   */
+  public void setPosition(double positionMeters) {
+    io.setPosition(positionMeters);
+  }
+
+  /**
+   * Immediately stop all elevator motion.
+   */
+  public void stopMotion() {
+    io.stop();
   }
 
   @Override

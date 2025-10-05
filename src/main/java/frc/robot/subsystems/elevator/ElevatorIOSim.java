@@ -53,6 +53,7 @@ public class ElevatorIOSim implements ElevatorIO {
         MIN_HEIGHT_METERS, // Minimum height
         MAX_HEIGHT_METERS, // Maximum height
         true // Simulate gravity
+        , appliedVolts, null
     );
 
     // Create PID controller for position control

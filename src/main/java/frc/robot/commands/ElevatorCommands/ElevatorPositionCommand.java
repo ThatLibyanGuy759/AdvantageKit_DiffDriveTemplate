@@ -1,7 +1,7 @@
 package frc.robot.commands.ElevatorCommands;
 
-import frc.robot.subsystems.elevator.Elevator;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.elevator.Elevator;
 
 /** Command to move the elevator to a specific position using AdvantageKit pattern. */
 public class ElevatorPositionCommand extends Command {
@@ -51,7 +51,7 @@ public class ElevatorPositionCommand extends Command {
   @Override
   public void initialize() {
     // Start moving to target position
-    elevator.moveToPosition(targetPosition).schedule();
+    elevator.setPosition(targetPosition);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -65,7 +65,7 @@ public class ElevatorPositionCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     // Stop the elevator when command ends
-    elevator.stop().schedule();
+    elevator.stopMotion();
   }
 
   // Returns true when the command should end.
