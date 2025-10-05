@@ -26,6 +26,10 @@ import frc.robot.subsystems.drive.DriveIOSim;
 import frc.robot.subsystems.drive.DriveIOTalonSRX;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.elevator.ElevatorIOSpark;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -37,6 +41,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final Elevator elevator;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -50,16 +55,19 @@ public class RobotContainer {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         drive = new Drive(new DriveIOTalonSRX(), new GyroIOPigeon2());
+        elevator = new Elevator(new ElevatorIOSpark());
         break;
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
         drive = new Drive(new DriveIOSim(), new GyroIO() {});
+        elevator = new Elevator(new ElevatorIOSim());
         break;
 
       default:
         // Replayed robot, disable IO implementations
         drive = new Drive(new DriveIO() {}, new GyroIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
         break;
     }
 
@@ -95,6 +103,22 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.arcadeDrive(
             drive, () -> -controller.getLeftY(), () -> -controller.getRightX()));
+
+    // Elevator button bindings
+    // Manual elevator control with triggers (up/down)
+    elevator.setDefaultCommand(
+        elevator.runTeleop(
+            () -> controller.getRightTriggerAxis(),  // Up
+            () -> controller.getLeftTriggerAxis())); // Down
+
+    // Preset position commands
+    controller.a().onTrue(elevator.moveToGround());  // A button - Ground position
+    controller.b().onTrue(elevator.moveToLow());     // B button - Low position  
+    controller.y().onTrue(elevator.moveToMid());     // Y button - Mid position
+    controller.x().onTrue(elevator.moveToHigh());    // X button - High position
+    
+    // Reset encoder position (use when elevator is at bottom)
+    controller.start().onTrue(elevator.resetPosition());
   }
 
   /**

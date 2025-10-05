@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 
 package frc.robot;
-
+import edu.wpi.first.math.util.Units;
 // import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -21,6 +21,20 @@ package frc.robot;
  * (log replay from a file).
  */
 public final class Constants {
+    public static final class ElevatorConstants {
+      public static final double discDiameterMeter = Units.inchesToMeters(2.082);
+      public static final double discCircumferenceMeter = discDiameterMeter * Math.PI;
+      public static final double discGearRatio = 9; 
+      public static final int elevatorMotorLeftCanId = 10;
+      public static final int elevatorMotorRightCanId = 11;
+      
+      public static final double kP = 0.0004;
+      public static final double kI = 0;
+      public static final double kD = 0;
+
+      public static final double minOutput = -1;
+      public static final double maxOutput = 1;
+  }
   public static final Mode currentMode = Mode.SIM;
 
   public static enum Mode {
