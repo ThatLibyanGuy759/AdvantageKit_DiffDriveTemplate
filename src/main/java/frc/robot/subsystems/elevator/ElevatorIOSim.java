@@ -18,12 +18,11 @@ import static frc.robot.Constants.ElevatorConstants.*;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 
 /**
- * Physics simulation implementation for the elevator subsystem.
- * Uses WPILib's ElevatorSim for realistic elevator physics including gravity.
+ * Physics simulation implementation for the elevator subsystem. Uses WPILib's ElevatorSim for
+ * realistic elevator physics including gravity.
  */
 public class ElevatorIOSim implements ElevatorIO {
   // Elevator physical parameters
@@ -31,30 +30,32 @@ public class ElevatorIOSim implements ElevatorIO {
   private static final double ELEVATOR_DRUM_RADIUS_METERS = discDiameterMeter / 2.0;
   private static final double MIN_HEIGHT_METERS = 0.0;
   private static final double MAX_HEIGHT_METERS = 1.5; // Maximum elevator height
-  
-  // Simulation constants  
+
+  // Simulation constants
   private static final double SIM_KP = 50.0; // Higher P gain for simulation
-  private static final double SIM_KD = 2.5;  // Some D gain for stability
+  private static final double SIM_KD = 2.5; // Some D gain for stability
 
   private final ElevatorSim elevatorSim;
   private final PIDController pidController;
-  
+
   private double appliedVolts = 0.0;
   private boolean closedLoop = false;
   private double positionSetpointMeters = 0.0;
 
   public ElevatorIOSim() {
-    // Create elevator simulation with NEO motor and gear reduction
-    elevatorSim = new ElevatorSim(
-        DCMotor.getNEO(2), // Two NEO motors 
-        discGearRatio,     // Gear reduction from your constants
-        ELEVATOR_MASS_KG,  // Carriage mass
-        ELEVATOR_DRUM_RADIUS_METERS, // Drum radius
-        MIN_HEIGHT_METERS, // Minimum height
-        MAX_HEIGHT_METERS, // Maximum height
-        true // Simulate gravity
-        , appliedVolts, null
-    );
+      double initialPositionMeters = 0.0;
+      double[] measurementStdDevs = new double[] {0.001}; // non-null measurement noise
+      elevatorSim =
+           new ElevatorSim(
+               DCMotor.getNEO(2), // Two NEO motors
+               discGearRatio, // Gear reduction from your constants
+                ELEVATOR_MASS_KG, // Carriage mass
+                ELEVATOR_DRUM_RADIUS_METERS, // Drum radius
+                MIN_HEIGHT_METERS, // Minimum height
+                MAX_HEIGHT_METERS, // Maximum height
+                true, // Simulate gravity
+                initialPositionMeters,
+                measurementStdDevs);
 
     // Create PID controller for position control
     pidController = new PIDController(SIM_KP, 0.0, SIM_KD);
@@ -64,7 +65,8 @@ public class ElevatorIOSim implements ElevatorIO {
   public void updateInputs(ElevatorIOInputs inputs) {
     // Run closed-loop control if enabled
     if (closedLoop) {
-      double pidOutput = pidController.calculate(elevatorSim.getPositionMeters(), positionSetpointMeters);
+      double pidOutput =
+          pidController.calculate(elevatorSim.getPositionMeters(), positionSetpointMeters);
       appliedVolts = MathUtil.clamp(pidOutput, -12.0, 12.0);
     }
 
@@ -77,7 +79,7 @@ public class ElevatorIOSim implements ElevatorIO {
     inputs.velocityMetersPerSec = elevatorSim.getVelocityMetersPerSecond();
     inputs.appliedVolts = appliedVolts;
     inputs.currentAmps = elevatorSim.getCurrentDrawAmps();
-    
+
     // Simulate limit switches
     inputs.atLowerLimit = inputs.positionMeters <= MIN_HEIGHT_METERS + 0.01;
     inputs.atUpperLimit = inputs.positionMeters >= MAX_HEIGHT_METERS - 0.01;

@@ -36,7 +36,7 @@ I've set up these controller bindings:
 - **Right/Left Triggers**: Manual up/down control
 - **A Button**: Ground position (0.0m)
 - **B Button**: Low position (0.3m)
-- **Y Button**: Mid position (0.8m) 
+- **Y Button**: Mid position (0.8m)
 - **X Button**: High position (1.2m)
 - **Start Button**: Reset encoder position
 

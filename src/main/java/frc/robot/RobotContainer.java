@@ -108,15 +108,15 @@ public class RobotContainer {
     // Manual elevator control with triggers (up/down)
     elevator.setDefaultCommand(
         elevator.runTeleop(
-            () -> controller.getRightTriggerAxis(),  // Up
+            () -> controller.getRightTriggerAxis(), // Up
             () -> controller.getLeftTriggerAxis())); // Down
 
     // Preset position commands
-    controller.a().onTrue(elevator.moveToGround());  // A button - Ground position
-    controller.b().onTrue(elevator.moveToLow());     // B button - Low position  
-    controller.y().onTrue(elevator.moveToMid());     // Y button - Mid position
-    controller.x().onTrue(elevator.moveToHigh());    // X button - High position
-    
+    controller.a().onTrue(elevator.moveToGround()); // A button - Ground position
+    controller.b().onTrue(elevator.moveToLow()); // B button - Low position
+    controller.y().onTrue(elevator.moveToMid()); // Y button - Mid position
+    controller.x().onTrue(elevator.moveToHigh()); // X button - High position
+
     // Reset encoder position (use when elevator is at bottom)
     controller.start().onTrue(elevator.resetPosition());
   }

@@ -20,8 +20,8 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 /**
- * Elevator subsystem using AdvantageKit IO pattern.
- * This subsystem can work with real hardware or simulation depending on the IO implementation provided.
+ * Elevator subsystem using AdvantageKit IO pattern. This subsystem can work with real hardware or
+ * simulation depending on the IO implementation provided.
  */
 public class Elevator extends SubsystemBase {
   private final ElevatorIO io;
@@ -37,23 +37,17 @@ public class Elevator extends SubsystemBase {
     this.io = io;
   }
 
-  /**
-   * Directly command the elevator in open loop voltage.
-   */
+  /** Directly command the elevator in open loop voltage. */
   public void setVoltage(double volts) {
     io.setVoltage(volts);
   }
 
-  /**
-   * Directly command the elevator to a closed-loop position.
-   */
+  /** Directly command the elevator to a closed-loop position. */
   public void setPosition(double positionMeters) {
     io.setPosition(positionMeters);
   }
 
-  /**
-   * Immediately stop all elevator motion.
-   */
+  /** Immediately stop all elevator motion. */
   public void stopMotion() {
     io.stop();
   }
@@ -64,90 +58,64 @@ public class Elevator extends SubsystemBase {
     Logger.processInputs("Elevator", inputs);
   }
 
-  /**
-   * Returns the current elevator height in meters.
-   */
+  /** Returns the current elevator height in meters. */
   @AutoLogOutput(key = "Elevator/HeightMeters")
   public double getHeight() {
     return inputs.positionMeters;
   }
 
-  /**
-   * Returns the current elevator velocity in meters per second.
-   */
-  @AutoLogOutput(key = "Elevator/VelocityMetersPerSec") 
+  /** Returns the current elevator velocity in meters per second. */
+  @AutoLogOutput(key = "Elevator/VelocityMetersPerSec")
   public double getVelocity() {
     return inputs.velocityMetersPerSec;
   }
 
-  /**
-   * Returns true if the elevator is at the specified position within tolerance.
-   */
+  /** Returns true if the elevator is at the specified position within tolerance. */
   public boolean atPosition(double targetMeters, double toleranceMeters) {
     return Math.abs(inputs.positionMeters - targetMeters) <= toleranceMeters;
   }
 
-  /**
-   * Returns true if the elevator is at the specified position within default tolerance (2cm).
-   */
+  /** Returns true if the elevator is at the specified position within default tolerance (2cm). */
   public boolean atPosition(double targetMeters) {
     return atPosition(targetMeters, 0.02); // 2cm tolerance
   }
 
-  /**
-   * Command to run the elevator at a specified voltage.
-   */
+  /** Command to run the elevator at a specified voltage. */
   public Command runVoltage(double volts) {
     return runEnd(() -> io.setVoltage(volts), () -> io.stop());
   }
 
-  /**
-   * Command to run the elevator at a percentage of max voltage.
-   */
+  /** Command to run the elevator at a percentage of max voltage. */
   public Command runPercent(double percent) {
     return runVoltage(percent * 12.0);
   }
 
-  /**
-   * Command to move elevator to a specific position and hold it there.
-   */
+  /** Command to move elevator to a specific position and hold it there. */
   public Command moveToPosition(double positionMeters) {
-    return runEnd(
-        () -> io.setPosition(positionMeters),
-        () -> io.stop());
+    return runEnd(() -> io.setPosition(positionMeters), () -> io.stop());
   }
 
-  /**
-   * Command to move elevator to ground position.
-   */
+  /** Command to move elevator to ground position. */
   public Command moveToGround() {
     return moveToPosition(GROUND_POSITION);
   }
 
-  /**
-   * Command to move elevator to low position.
-   */
+  /** Command to move elevator to low position. */
   public Command moveToLow() {
     return moveToPosition(LOW_POSITION);
   }
 
-  /**
-   * Command to move elevator to mid position.
-   */
+  /** Command to move elevator to mid position. */
   public Command moveToMid() {
     return moveToPosition(MID_POSITION);
   }
 
-  /**
-   * Command to move elevator to high position.
-   */
+  /** Command to move elevator to high position. */
   public Command moveToHigh() {
     return moveToPosition(HIGH_POSITION);
   }
 
-  /**
-   * Command for manual elevator control using joystick/triggers.
-   */
+  /** Command for manual elevator control using joystick/triggers. */
   public Command runTeleop(DoubleSupplier upInput, DoubleSupplier downInput) {
     return runEnd(
         () -> {
@@ -157,32 +125,26 @@ public class Elevator extends SubsystemBase {
         () -> io.stop());
   }
 
-  /**
-   * Command to stop the elevator.
-   */
+  /** Command to stop the elevator. */
   public Command stop() {
     return runOnce(() -> io.stop());
   }
 
   /**
-   * Command to reset the elevator encoder position to zero.
-   * Use this when the elevator is at the bottom position.
+   * Command to reset the elevator encoder position to zero. Use this when the elevator is at the
+   * bottom position.
    */
   public Command resetPosition() {
     return runOnce(() -> io.resetPosition());
   }
 
-  /**
-   * Returns true if the elevator is at the upper limit.
-   */
+  /** Returns true if the elevator is at the upper limit. */
   @AutoLogOutput(key = "Elevator/AtUpperLimit")
   public boolean atUpperLimit() {
     return inputs.atUpperLimit;
   }
 
-  /**
-   * Returns true if the elevator is at the lower limit.
-   */
+  /** Returns true if the elevator is at the lower limit. */
   @AutoLogOutput(key = "Elevator/AtLowerLimit")
   public boolean atLowerLimit() {
     return inputs.atLowerLimit;

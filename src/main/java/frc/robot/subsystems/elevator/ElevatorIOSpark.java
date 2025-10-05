@@ -25,8 +25,8 @@ import com.revrobotics.spark.SparkMax;
 import frc.robot.Configs;
 
 /**
- * Elevator IO implementation for REV SparkMax motor controllers.
- * This implementation drives two SparkMax motors - one as leader, one as follower.
+ * Elevator IO implementation for REV SparkMax motor controllers. This implementation drives two
+ * SparkMax motors - one as leader, one as follower.
  */
 public class ElevatorIOSpark implements ElevatorIO {
   private final SparkMax elevatorMotorLeft;
@@ -60,14 +60,15 @@ public class ElevatorIOSpark implements ElevatorIO {
   public void updateInputs(ElevatorIOInputs inputs) {
     // The encoder is already configured to return meters directly
     inputs.positionMeters = encoder.getPosition();
-    
+
     // The encoder velocity is already configured to return meters per second
     inputs.velocityMetersPerSec = encoder.getVelocity();
-    
+
     // Motor voltage and current
-    inputs.appliedVolts = elevatorMotorRight.getAppliedOutput() * elevatorMotorRight.getBusVoltage();
+    inputs.appliedVolts =
+        elevatorMotorRight.getAppliedOutput() * elevatorMotorRight.getBusVoltage();
     inputs.currentAmps = elevatorMotorRight.getOutputCurrent();
-    
+
     // Limit switches (if implemented in hardware)
     inputs.atUpperLimit = false; // TODO: Implement if you have limit switches
     inputs.atLowerLimit = false; // TODO: Implement if you have limit switches
@@ -93,6 +94,4 @@ public class ElevatorIOSpark implements ElevatorIO {
   public void resetPosition() {
     encoder.setPosition(0);
   }
-
-
 }
