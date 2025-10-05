@@ -32,6 +32,10 @@ public class Elevator extends SubsystemBase {
   public static final double LOW_POSITION = 0.3;
   public static final double MID_POSITION = 0.8;
   public static final double HIGH_POSITION = 1.2;
+  public static final double GROUND_POSITION_OPPORATOR = 0.15;
+  public static final double LOW_POSITION_OPPORATOR = 0.5;
+  public static final double MID_POSITION_OPPORATOR = 1;
+  public static final double HIGH_POSITION_OPPORATOR = 1.4;
 
   public Elevator(ElevatorIO io) {
     this.io = io;
@@ -113,6 +117,25 @@ public class Elevator extends SubsystemBase {
   /** Command to move elevator to high position. */
   public Command moveToHigh() {
     return moveToPosition(HIGH_POSITION);
+  }
+
+  public Command moveToGroundOpporator() {
+    return moveToPosition(GROUND_POSITION_OPPORATOR);
+  }
+
+  /** Command to move elevator to low position. */
+  public Command moveToLowOpporator() {
+    return moveToPosition(LOW_POSITION_OPPORATOR);
+  }
+
+  /** Command to move elevator to mid position. */
+  public Command moveToMidOpporator() {
+    return moveToPosition(MID_POSITION_OPPORATOR);
+  }
+
+  /** Command to move elevator to high position. */
+  public Command moveToHighOpporator() {
+    return moveToPosition(HIGH_POSITION_OPPORATOR);
   }
 
   /** Command for manual elevator control using joystick/triggers. */

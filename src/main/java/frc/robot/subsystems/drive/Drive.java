@@ -214,4 +214,9 @@ public class Drive extends SubsystemBase {
   public double getCharacterizationVelocity() {
     return (inputs.leftVelocityRadPerSec + inputs.rightVelocityRadPerSec) / 2.0;
   }
+
+  // public static double halfSpeed() {
+  //   return DriveConstants.maxSpeedMetersPerSec / 2;
+  // }
+
 }

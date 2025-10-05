@@ -44,7 +44,8 @@ public class RobotContainer {
   private final Elevator elevator;
 
   // Controller
-  private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController driverController = new CommandXboxController(0);
+  private final CommandXboxController opporatorController = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -102,23 +103,29 @@ public class RobotContainer {
     // Default command, normal arcade drive
     drive.setDefaultCommand(
         DriveCommands.arcadeDrive(
-            drive, () -> -controller.getLeftY(), () -> -controller.getRightX()));
+            drive, () -> -driverController.getLeftY(), () -> -driverController.getRightX()));
 
     // Elevator button bindings
     // Manual elevator control with triggers (up/down)
     elevator.setDefaultCommand(
         elevator.runTeleop(
-            () -> controller.getRightTriggerAxis(), // Up
-            () -> controller.getLeftTriggerAxis())); // Down
+            () -> driverController.getRightTriggerAxis(), // Up
+            () -> driverController.getLeftTriggerAxis())); // Down
 
     // Preset position commands
-    controller.a().onTrue(elevator.moveToGround()); // A button - Ground position
-    controller.b().onTrue(elevator.moveToLow()); // B button - Low position
-    controller.y().onTrue(elevator.moveToMid()); // Y button - Mid position
-    controller.x().onTrue(elevator.moveToHigh()); // X button - High position
+    driverController.b().onTrue(elevator.moveToGround()); // B button - Ground position
+    driverController.a().onTrue(elevator.moveToLow()); // A button - Low position
+    driverController.x().onTrue(elevator.moveToMid()); // X button - Mid position
+    driverController.y().onTrue(elevator.moveToHigh()); // Y button - High position
+    // driverController.rightBumper().whileTrue(DriveCommands.halfSpeed()); half speed WIP
+
+    opporatorController.b().onTrue(elevator.moveToGroundOpporator()); // B button - Ground position
+    opporatorController.a().onTrue(elevator.moveToLowOpporator()); // A button - Low position
+    opporatorController.x().onTrue(elevator.moveToMidOpporator()); // X button - Mid position
+    opporatorController.y().onTrue(elevator.moveToHighOpporator()); // Y button - High position
 
     // Reset encoder position (use when elevator is at bottom)
-    controller.start().onTrue(elevator.resetPosition());
+    driverController.start().onTrue(elevator.resetPosition());
   }
 
   /**

@@ -58,7 +58,7 @@ public class ElevatorIOSim implements ElevatorIO {
             MAX_HEIGHT_METERS, // Maximum height
             true, // Simulate gravity
             initialPositionMeters, // Starting height
-            measurementStdDevs); 
+            measurementStdDevs);
     // Create PID controller for position control
     pidController = new PIDController(SIM_KP, 0.0, SIM_KD);
   }

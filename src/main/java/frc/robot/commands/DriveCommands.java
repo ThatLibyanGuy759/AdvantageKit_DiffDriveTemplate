@@ -55,6 +55,9 @@ public class DriveCommands {
         drive);
   }
 
+  // public static Command halfSpeed(double speed) { WIP
+  //     return speed;
+  // }
   /** Measures the velocity feedforward constants for the drive. */
   public static Command feedforwardCharacterization(Drive drive) {
     List<Double> velocitySamples = new LinkedList<>();
