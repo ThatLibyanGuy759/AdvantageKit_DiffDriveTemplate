@@ -13,6 +13,9 @@
 
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.DoubleSupplier;
@@ -30,8 +33,8 @@ public class Elevator extends SubsystemBase {
   // Elevator preset positions (in meters)
   public static final double GROUND_POSITION = 0.0;
   public static final double LOW_POSITION = 0.3;
-  public static final double MID_POSITION = 0.8;
-  public static final double HIGH_POSITION = 1.2;
+  public static final double MID_POSITION = 0.55;
+  public static final double HIGH_POSITION = 0.67;
   public static final double GROUND_POSITION_OPPORATOR = 0.15;
   public static final double LOW_POSITION_OPPORATOR = 0.5;
   public static final double MID_POSITION_OPPORATOR = 1;
@@ -60,12 +63,18 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Elevator", inputs);
-  }
+    Pose3d robotPose =
+        new Pose3d(
+            0.35, 0.07, 0.85, new Rotation3d(0.0, 0.0, Math.toRadians(0)) // facing direction
+            );
+    Logger.recordOutput("Robot/Pose", robotPose);
 
-  /** Returns the current elevator height in meters. */
-  @AutoLogOutput(key = "Elevator/HeightMeters")
-  public double getHeight() {
-    return inputs.positionMeters;
+    double elevatorHeight = inputs.positionMeters;
+
+    Transform3d elevatorOffset =
+        new Transform3d(-0.238, 0.0, 0.289 + elevatorHeight, new Rotation3d());
+    Pose3d elevatorPose = robotPose.plus(elevatorOffset);
+    Logger.recordOutput("Elevator/ComponentPose", elevatorPose);
   }
 
   /** Returns the current elevator velocity in meters per second. */

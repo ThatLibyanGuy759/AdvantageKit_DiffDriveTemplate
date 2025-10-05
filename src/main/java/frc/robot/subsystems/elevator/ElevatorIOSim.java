@@ -45,7 +45,7 @@ public class ElevatorIOSim implements ElevatorIO {
   public ElevatorIOSim() {
     double initialPositionMeters = 0.0;
 
-    // ✅ Fix: Two elements, one for position noise and one for velocity noise
+   
     double[] measurementStdDevs = new double[] {0.001, 0.001};
 
     elevatorSim =
