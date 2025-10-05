@@ -43,20 +43,22 @@ public class ElevatorIOSim implements ElevatorIO {
   private double positionSetpointMeters = 0.0;
 
   public ElevatorIOSim() {
-      double initialPositionMeters = 0.0;
-      double[] measurementStdDevs = new double[] {0.001}; // non-null measurement noise
-      elevatorSim =
-           new ElevatorSim(
-               DCMotor.getNEO(2), // Two NEO motors
-               discGearRatio, // Gear reduction from your constants
-                ELEVATOR_MASS_KG, // Carriage mass
-                ELEVATOR_DRUM_RADIUS_METERS, // Drum radius
-                MIN_HEIGHT_METERS, // Minimum height
-                MAX_HEIGHT_METERS, // Maximum height
-                true, // Simulate gravity
-                initialPositionMeters,
-                measurementStdDevs);
+    double initialPositionMeters = 0.0;
 
+    // ✅ Fix: Two elements, one for position noise and one for velocity noise
+    double[] measurementStdDevs = new double[] {0.001, 0.001};
+
+    elevatorSim =
+        new ElevatorSim(
+            DCMotor.getNEO(2), // Two NEO motors
+            discGearRatio, // Gear reduction
+            ELEVATOR_MASS_KG, // Carriage mass
+            ELEVATOR_DRUM_RADIUS_METERS, // Drum radius
+            MIN_HEIGHT_METERS, // Minimum height
+            MAX_HEIGHT_METERS, // Maximum height
+            true, // Simulate gravity
+            initialPositionMeters, // Starting height
+            measurementStdDevs); 
     // Create PID controller for position control
     pidController = new PIDController(SIM_KP, 0.0, SIM_KD);
   }
