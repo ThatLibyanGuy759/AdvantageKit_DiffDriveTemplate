@@ -35,10 +35,10 @@ public class Elevator extends SubsystemBase {
   public static final double LOW_POSITION = 0.3;
   public static final double MID_POSITION = 0.55;
   public static final double HIGH_POSITION = 0.67;
-  public static final double GROUND_POSITION_OPPORATOR = 0.15;
-  public static final double LOW_POSITION_OPPORATOR = 0.5;
-  public static final double MID_POSITION_OPPORATOR = 1;
-  public static final double HIGH_POSITION_OPPORATOR = 1.4;
+  public static final double GROUND_POSITION_OPPORATOR = 0.1;
+  public static final double LOW_POSITION_OPPORATOR = 0.15;
+  public static final double MID_POSITION_OPPORATOR = 0.4;
+  public static final double HIGH_POSITION_OPPORATOR = 0.58;
 
   public Elevator(ElevatorIO io) {
     this.io = io;

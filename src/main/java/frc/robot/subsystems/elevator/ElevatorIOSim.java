@@ -45,7 +45,6 @@ public class ElevatorIOSim implements ElevatorIO {
   public ElevatorIOSim() {
     double initialPositionMeters = 0.0;
 
-   
     double[] measurementStdDevs = new double[] {0.001, 0.001};
 
     elevatorSim =
