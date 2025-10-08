@@ -32,6 +32,8 @@ import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.elevator.ElevatorIOSpark;
 import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.wrist.WristIO;
+import frc.robot.subsystems.wrist.WristIOSim;
 import frc.robot.subsystems.wrist.WristIOSpark;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -68,14 +70,14 @@ public class RobotContainer {
         // Sim robot, instantiate physics sim IO implementations
         drive = new Drive(new DriveIOSim(), new GyroIO() {});
         elevator = new Elevator(new ElevatorIOSim());
-        wrist = new Wrist(new WristIOSpark()); // Use same wrist class in sim for now
+        wrist = new Wrist(new WristIOSim()); // Use same wrist class in sim for now
         break;
 
       default:
         // Replayed robot, disable IO implementations
         drive = new Drive(new DriveIO() {}, new GyroIO() {});
         elevator = new Elevator(new ElevatorIO() {});
-        wrist = new Wrist(new WristIOSpark()); // Safe no-IO usage
+        wrist = new Wrist(new WristIO() {}); // Safe no-IO usage
         break;
     }
 
