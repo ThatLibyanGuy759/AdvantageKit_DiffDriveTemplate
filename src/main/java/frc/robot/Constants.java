@@ -36,6 +36,33 @@ public final class Constants {
     public static final double minOutput = -1;
     public static final double maxOutput = 1;
   }
+  // New Wrist constants following the Elevator pattern
+  public static final class WristConstants {
+    // TODO: Fill with your actual CAN ID and tuning values
+    public static final int wristMotorCANId = 20;
+
+    // Closed-loop gains (match your old behavior as needed)
+    public static final double kP = 0.8; // placeholder, tune as needed
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+
+    public static final int smartCurrentLimit = 30;
+
+    public static final double minOutput = -1.0;
+    public static final double maxOutput = 1.0;
+
+    // Simulation/physical model parameters (used only by WristIOSim)
+    public static final double wristGearReduction = 1.0; // placeholder
+    public static final double wristMOI = 0.025; // kg*m^2, placeholder
+    public static final double wristArmLengthMeters = 0.25; // placeholder
+    public static final double minAngleRads = Math.toRadians(-120.0);
+    public static final double maxAngleRads = Math.toRadians(120.0);
+    public static final double initialAngleRads = 0.0;
+
+    // Sim PID
+    public static final double simKp = 8.0;
+    public static final double simKd = 0.5;
+  }
 
   public static final Mode currentMode = Mode.SIM;
 

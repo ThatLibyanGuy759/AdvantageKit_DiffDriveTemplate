@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.WristCommands.WristPositionCommand;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveIO;
 import frc.robot.subsystems.drive.DriveIOSim;
@@ -30,6 +31,8 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.elevator.ElevatorIOSpark;
+import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.wrist.WristIOSpark;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -42,6 +45,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Elevator elevator;
+  private final Wrist wrist; // Added wrist subsystem
 
   // Controller
   private final CommandXboxController driverController = new CommandXboxController(0);
@@ -57,18 +61,21 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         drive = new Drive(new DriveIOTalonSRX(), new GyroIOPigeon2());
         elevator = new Elevator(new ElevatorIOSpark());
+        wrist = new Wrist(new WristIOSpark()); // Wrist uses SparkMax + abs encoder directly
         break;
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
         drive = new Drive(new DriveIOSim(), new GyroIO() {});
         elevator = new Elevator(new ElevatorIOSim());
+        wrist = new Wrist(new WristIOSpark()); // Use same wrist class in sim for now
         break;
 
       default:
         // Replayed robot, disable IO implementations
         drive = new Drive(new DriveIO() {}, new GyroIO() {});
         elevator = new Elevator(new ElevatorIO() {});
+        wrist = new Wrist(new WristIOSpark()); // Safe no-IO usage
         break;
     }
 
@@ -123,6 +130,15 @@ public class RobotContainer {
     opporatorController.a().onTrue(elevator.moveToLowOpporator()); // A button - Low position
     opporatorController.x().onTrue(elevator.moveToMidOpporator()); // X button - Mid position
     opporatorController.y().onTrue(elevator.moveToHighOpporator()); // Y button - High position
+
+    // Wrist button bindings (example angles, adjust as needed)
+    // Left bumper -> 0 degrees (stowed)
+    opporatorController.leftBumper().onTrue(new WristPositionCommand(wrist, 0.0));
+    // Right bumper -> 90 degrees (deploy)
+    opporatorController.rightBumper().onTrue(new WristPositionCommand(wrist, 90.0));
+    // POV up -> 45 degrees, POV down -> -30 degrees
+    opporatorController.povUp().onTrue(new WristPositionCommand(wrist, 45.0));
+    opporatorController.povDown().onTrue(new WristPositionCommand(wrist, -30.0));
 
     // Reset encoder position (use when elevator is at bottom)
     driverController.start().onTrue(elevator.resetPosition());
