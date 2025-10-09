@@ -137,7 +137,7 @@ public class RobotContainer {
     // Left bumper -> 0 degrees (stowed)
     opporatorController.leftBumper().onTrue(new WristPositionCommand(wrist, 0.0));
     // Right bumper -> 90 degrees (deploy)
-    opporatorController.rightBumper().onTrue(new WristPositionCommand(wrist, 90.0));
+    opporatorController.rightBumper().onTrue(new WristPositionCommand(wrist, -300.0));
     // POV up -> 45 degrees, POV down -> -30 degrees
     opporatorController.povUp().onTrue(new WristPositionCommand(wrist, 45.0));
     opporatorController.povDown().onTrue(new WristPositionCommand(wrist, -30.0));

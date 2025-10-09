@@ -42,9 +42,9 @@ public final class Constants {
     public static final int wristMotorCANId = 20;
 
     // Closed-loop gains (match your old behavior as needed)
-    public static final double kP = 0.8; // placeholder, tune as needed
+    public static final double kP = 0.0004; // placeholder, tune as needed
     public static final double kI = 0.0;
-    public static final double kD = 0.0;
+    public static final double kD = 0;
 
     public static final int smartCurrentLimit = 30;
 

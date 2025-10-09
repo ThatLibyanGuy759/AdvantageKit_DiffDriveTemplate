@@ -1,15 +1,11 @@
 package frc.robot.subsystems.wrist;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Wrist extends SubsystemBase {
   private final WristIO io;
@@ -24,7 +20,8 @@ public class Wrist extends SubsystemBase {
 
   /** Pivot of the wrist relative to the robot base, in meters (from config.json). */
   private static final double PIVOT_X_M = 0.090238; // from zeroedPosition[0]
-  private static final double PIVOT_Y_M = 0.0;      // from zeroedPosition[1]
+
+  private static final double PIVOT_Y_M = 0.0; // from zeroedPosition[1]
   private static final double PIVOT_Z_M = 0.090298; // from zeroedPosition[2]
 
   /** If your model’s zero orientation doesn’t match code zero, add an offset (degrees). */
@@ -72,8 +69,7 @@ public class Wrist extends SubsystemBase {
 
     // If another subsystem (like Elevator) already publishes Robot/Pose, *read* that pose
     // via your own tracking (recommended), or re-create the same fixed pose your elevator uses:
-    Pose3d robotPose =
-        new Pose3d(0.35, 0.07, 0.85, new Rotation3d(0.0, 0.0, Math.toRadians(0.0)));
+    Pose3d robotPose = new Pose3d(0.03, 0.09, 0.8, new Rotation3d(0.0, 0.0, Math.toRadians(0.0)));
 
     // === 2) Wrist angle and axis ===
     double angleRad = inputs.angleRads + Math.toRadians(WRIST_ZERO_OFFSET_DEG);
@@ -86,12 +82,12 @@ public class Wrist extends SubsystemBase {
 
     // === 3) Wrist pivot location relative to robot origin (meters) ===
     // These match your config.json zeroedPosition, but in meters
-    Transform3d wristXform = new Transform3d(
-        PIVOT_X_M,    // 0.090238
-        PIVOT_Y_M,    // 0.0
-        PIVOT_Z_M,    // 0.090298
-        wristRot
-    );
+    Transform3d wristXform =
+        new Transform3d(
+            PIVOT_X_M, // 0.090238
+            PIVOT_Y_M, // 0.0
+            PIVOT_Z_M, // 0.090298
+            wristRot);
 
     // === 4) Compose final wrist pose in field space, like Elevator does ===
     Pose3d wristPose = robotPose.plus(wristXform);
