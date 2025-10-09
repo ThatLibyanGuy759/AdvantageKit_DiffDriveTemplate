@@ -27,7 +27,7 @@ public class WristPositionCommand extends Command {
 
   @Override
   public void initialize() {
-    wrist.wristRotateToAbsoluteDegrees(targetPosition);
+    wrist.wristRotateToPosition(targetPosition);
   }
 
   @Override
@@ -40,7 +40,7 @@ public class WristPositionCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    double angle = wrist.getWristAngleContinuousDeg();
-    return Math.abs(angle - targetPosition) <= 2.0;
+    double angle = wrist.getWristAngle();
+    return (targetPosition - 2 < angle && targetPosition + 2 > angle);
   }
 }

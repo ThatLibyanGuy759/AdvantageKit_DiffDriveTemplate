@@ -36,16 +36,13 @@ public final class Configs {
   // Wrist config without SparkMaxAbsoluteEncoderConfig
   public static final class WristConfigs {
     public static final SparkMaxConfig wristConfig = new SparkMaxConfig();
+
     static {
       wristConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(WristConstants.smartCurrentLimit);
-  
-      // PRIMARY RELATIVE ENCODER is the feedback for closed-loop (multi-turn)
-      wristConfig.encoder
-          .positionConversionFactor(2.0 * Math.PI)   // rotations -> radians
-          .velocityConversionFactor((2.0 * Math.PI) / 60.0); // RPM -> rad/s
-  
-      wristConfig.closedLoop
-          .feedbackSensor(FeedbackSensor.kPrimaryEncoder) // << change here
+
+      wristConfig
+          .closedLoop
+          .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
           .p(WristConstants.kP)
           .i(WristConstants.kI)
           .d(WristConstants.kD)
