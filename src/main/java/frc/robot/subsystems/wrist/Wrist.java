@@ -34,92 +34,65 @@ public class Wrist extends SubsystemBase {
   // Continuous angle tracking (multi-turn)
   // =======================
   private boolean initialized = false;
-  private double lastWrappedRad = 0.0; // last raw (wrapped) angle from IO, in radians
-  private double continuousRad = 0.0;  // unwrapped, multi-turn angle in radians
+  private double lastWrappedRad = 0.0;
+  private double continuousRad = 0.0;
 
-  public Wrist(WristIO io) {
-    this.io = io;
-  }
+  public Wrist(WristIO io) { this.io = io; }
 
-  /** Closed-loop to a position specified in DEGREES (ABSOLUTE multi-turn). */
+  /** Multi-turn absolute setpoint in DEGREES (use this for -270, +450, etc.). */
   public void wristRotateToAbsoluteDegrees(double absoluteDegrees) {
     double targetRad = Math.toRadians(absoluteDegrees);
-    // Place the target near our current continuous angle so it follows the intended turn count
     double placed = placeInScope(targetRad, continuousRad);
-    io.setPositionRadians(placed); // IO should NOT wrap; use multi-turn position control
+    io.setPositionRadians(placed); // IO must not wrap; see Spark + SIM fixes below
   }
 
-  /** Legacy API: rotate to position in degrees (kept for compatibility).
-   *  NOTE: This may take the shortest path in a single-turn domain depending on your IO.
-   *  Prefer wristRotateToAbsoluteDegrees(...) for multi-turn moves like -270.
-   */
+  /** Legacy single-turn (kept for compatibility; may shortest-path). */
   public void wristRotateToPosition(double positionDegrees) {
     io.setPositionRadians(Rotation2d.fromDegrees(positionDegrees).getRadians());
   }
 
-  /** Return wrist angle in degrees (wrapped -180..180). */
+  /** Wrapped (-180..180) angle for dashboards. */
   public double getWristAngle() {
     return Rotation2d.fromRadians(inputs.angleRads).getDegrees();
   }
 
-  /** Set wrist open-loop speed (-1 to 1). */
-  public void setWristSpeed(double speed) {
-    io.setPercent(speed);
+  /** Continuous (multi-turn) angle, DEGREES – use this for isFinished checks. */
+  public double getWristAngleContinuousDeg() {
+    return Math.toDegrees(continuousRad);
   }
-  public void printWristPosition() { 
-    Logger.recordOutput("Wrist/AngleDegrees", getWristAngle()); 
-  }
+
+  public void setWristSpeed(double speed) { io.setPercent(speed); }
+  public void printWristPosition() { Logger.recordOutput("Wrist/AngleDegrees", getWristAngle()); }
 
   @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Wrist", inputs);
 
-    // === 1) Build continuous (multi-turn) angle from wrapped sensor ===
-    double wrapped = inputs.angleRads; // typically -π..π from IO
+    // Unwrap sensor -> continuous
+    double wrapped = inputs.angleRads;
     if (!initialized) {
       initialized = true;
       lastWrappedRad = wrapped;
-      continuousRad = wrapped; // seed
+      continuousRad = wrapped;
     } else {
-      // Unwrap across the discontinuity using inputModulus in (-π, π]
       double delta = MathUtil.inputModulus(wrapped - lastWrappedRad, -Math.PI, Math.PI);
       continuousRad += delta;
       lastWrappedRad = wrapped;
     }
 
-    // Debug logs (help verify unwrapping)
     Logger.recordOutput("Wrist/AngleWrappedDeg", Math.toDegrees(wrapped));
     Logger.recordOutput("Wrist/AngleContinuousDeg", Math.toDegrees(continuousRad));
 
-    // === 2) Compose like Elevator (do NOT publish Robot/Pose here) ===
-    // If another subsystem already publishes Robot/Pose, do not log it here.
-    // Re-create the fixed pose you used (matching your current file):
-    Pose3d robotPose =
-        new Pose3d(0.03, 0.09, 0.8, new Rotation3d(0.0, 0.0, Math.toRadians(0.0)));
-
-    // Visualization angle = continuous + zero offset
+    // Elevator-style viz (don’t publish Robot/Pose here)
+    Pose3d robotPose = new Pose3d(0.03, 0.09, 0.8, new Rotation3d(0.0, 0.0, 0.0));
     double visRad = continuousRad + Math.toRadians(WRIST_ZERO_OFFSET_DEG);
-
-    // Choose the correct axis for your wrist rotation:
-    //   Y-axis (pitch) shown here; if wrong, try Z (yaw) or X (roll) instead.
-    Rotation3d wristRot = new Rotation3d(0.0, visRad, 0.0);
-    // For Z axis: Rotation3d wristRot = new Rotation3d(0.0, 0.0, visRad);
-    // For X axis: Rotation3d wristRot = new Rotation3d(visRad, 0.0, 0.0);
-
+    Rotation3d wristRot = new Rotation3d(0.0, visRad, 0.0); // change axis if needed
     Transform3d wristXform = new Transform3d(PIVOT_X_M, PIVOT_Y_M, PIVOT_Z_M, wristRot);
     Pose3d wristPose = robotPose.plus(wristXform);
-
-    // === 3) Publish a SINGLE Pose3d for this mechanism (same pattern as Elevator) ===
     Logger.recordOutput("Wrist/ComponentPose", wristPose);
-
-    // Optional scalar for sanity (wrapped degrees)
-    Logger.recordOutput("Wrist/AngleDegrees", getWristAngle());
   }
 
-  // ----------------- Helpers -----------------
-
-  /** Place target angle (rad) in the same "scope" as reference (rad), preserving multi-turn intent. */
   private static double placeInScope(double targetRad, double referenceRad) {
     while (targetRad - referenceRad > Math.PI)  targetRad -= 2.0 * Math.PI;
     while (targetRad - referenceRad <= -Math.PI) targetRad += 2.0 * Math.PI;

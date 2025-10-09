@@ -55,8 +55,8 @@ public final class Constants {
     public static final double wristGearReduction = 1.0; // placeholder
     public static final double wristMOI = 0.025; // kg*m^2, placeholder
     public static final double wristArmLengthMeters = 0.25; // placeholder
-    public static final double minAngleRads = Math.toRadians(-120.0);
-    public static final double maxAngleRads = Math.toRadians(120.0);
+    public static final double minAngleRads = Math.toRadians(-720.0);
+    public static final double maxAngleRads = Math.toRadians(720.0);
     public static final double initialAngleRads = 0.0;
 
     // Sim PID
