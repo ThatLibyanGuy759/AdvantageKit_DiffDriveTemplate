@@ -34,7 +34,7 @@ public class Elevator extends SubsystemBase {
   public static final double GROUND_POSITION = 0.0;
   public static final double LOW_POSITION = 0.3;
   public static final double MID_POSITION = 0.55;
-  public static final double HIGH_POSITION = 0.67;
+  public static final double HIGH_POSITION = 0.69;
   public static final double GROUND_POSITION_OPPORATOR = 0.1;
   public static final double LOW_POSITION_OPPORATOR = 0.15;
   public static final double MID_POSITION_OPPORATOR = 0.4;
@@ -91,6 +91,10 @@ public class Elevator extends SubsystemBase {
   /** Returns true if the elevator is at the specified position within default tolerance (2cm). */
   public boolean atPosition(double targetMeters) {
     return atPosition(targetMeters, 0.02); // 2cm tolerance
+  }
+
+  public double getElevatorHeightMeters() {
+    return inputs.positionMeters;
   }
 
   /** Command to run the elevator at a specified voltage. */

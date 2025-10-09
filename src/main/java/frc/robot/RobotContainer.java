@@ -63,21 +63,22 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         drive = new Drive(new DriveIOTalonSRX(), new GyroIOPigeon2());
         elevator = new Elevator(new ElevatorIOSpark());
-        wrist = new Wrist(new WristIOSpark()); // Wrist uses SparkMax + abs encoder directly
+        wrist =
+            new Wrist(new WristIOSpark(), elevator); // Wrist uses SparkMax + abs encoder directly
         break;
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
         drive = new Drive(new DriveIOSim(), new GyroIO() {});
         elevator = new Elevator(new ElevatorIOSim());
-        wrist = new Wrist(new WristIOSim()); // Use same wrist class in sim for now
+        wrist = new Wrist(new WristIOSim(), elevator); // Use same wrist class in sim for now
         break;
 
       default:
         // Replayed robot, disable IO implementations
         drive = new Drive(new DriveIO() {}, new GyroIO() {});
         elevator = new Elevator(new ElevatorIO() {});
-        wrist = new Wrist(new WristIO() {}); // Safe no-IO usage
+        wrist = new Wrist(new WristIO() {}, elevator); // Safe no-IO usage
         break;
     }
 
@@ -126,9 +127,20 @@ public class RobotContainer {
     driverController.a().onTrue(elevator.moveToLow()); // A button - Low position
     driverController.x().onTrue(elevator.moveToMid()); // X button - Mid position
     driverController.y().onTrue(elevator.moveToHigh()); // Y button - High position
+
+    driverController.b().onTrue(elevator.moveToGround()); // B button - Ground position
+    driverController.a().onTrue(elevator.moveToLow()); // A button - Low position
+    driverController.x().onTrue(elevator.moveToMid()); // X button - Mid position
+    driverController.y().onTrue(elevator.moveToHigh());
     // driverController.rightBumper().whileTrue(DriveCommands.halfSpeed()); half speed WIP
 
-    opporatorController.b().onTrue(elevator.moveToGroundOpporator()); // B button - Ground position
+    opporatorController.a().onTrue(new WristPositionCommand(wrist, -200.0));
+    opporatorController.x().onTrue(new WristPositionCommand(wrist, -200.0));
+    opporatorController.y().onTrue(new WristPositionCommand(wrist, -200.0));
+    driverController.a().onTrue(new WristPositionCommand(wrist, -267.0));
+    driverController.x().onTrue(new WristPositionCommand(wrist, -267.0));
+    driverController.y().onTrue(new WristPositionCommand(wrist, -267.0));
+    opporatorController.b().onTrue(elevator.moveToGround()); // B button - Ground position
     opporatorController.a().onTrue(elevator.moveToLowOpporator()); // A button - Low position
     opporatorController.x().onTrue(elevator.moveToMidOpporator()); // X button - Mid position
     opporatorController.y().onTrue(elevator.moveToHighOpporator()); // Y button - High position
@@ -136,8 +148,9 @@ public class RobotContainer {
     // Wrist button bindings (example angles, adjust as needed)
     // Left bumper -> 0 degrees (stowed)
     opporatorController.leftBumper().onTrue(new WristPositionCommand(wrist, 0.0));
+    opporatorController.b().onTrue(new WristPositionCommand(wrist, -38.0));
     // Right bumper -> 90 degrees (deploy)
-    opporatorController.rightBumper().onTrue(new WristPositionCommand(wrist, -300.0));
+    opporatorController.rightBumper().onTrue(new WristPositionCommand(wrist, -267.0));
     // POV up -> 45 degrees, POV down -> -30 degrees
     opporatorController.povUp().onTrue(new WristPositionCommand(wrist, 45.0));
     opporatorController.povDown().onTrue(new WristPositionCommand(wrist, -30.0));
