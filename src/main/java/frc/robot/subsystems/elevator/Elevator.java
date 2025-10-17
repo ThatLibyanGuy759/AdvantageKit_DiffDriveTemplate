@@ -64,9 +64,7 @@ public class Elevator extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Elevator", inputs);
     Pose3d robotPose =
-        new Pose3d(
-            0.35, 0.07, 0.85, new Rotation3d(0.0, 0.0, Math.toRadians(0)) // facing direction
-            );
+        new Pose3d(0.35, 0.07, 0.85, new Rotation3d(0.0, 0.0, Math.toRadians(0)));
     Logger.recordOutput("Robot/Pose", robotPose);
 
     double elevatorHeight = inputs.positionMeters;
@@ -74,7 +72,7 @@ public class Elevator extends SubsystemBase {
     Transform3d elevatorOffset =
         new Transform3d(-0.238, 0.0, 0.289 + elevatorHeight, new Rotation3d());
     Pose3d elevatorPose = robotPose.plus(elevatorOffset);
-    Logger.recordOutput("Elevator/ComponentPose", elevatorPose);
+    Logger.recordOutput("Elevator/ElevatorPose", elevatorPose);
   }
 
   /** Returns the current elevator velocity in meters per second. */

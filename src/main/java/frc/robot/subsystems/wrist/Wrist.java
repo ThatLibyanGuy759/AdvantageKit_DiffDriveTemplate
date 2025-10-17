@@ -26,15 +26,10 @@ public class Wrist extends SubsystemBase {
   private static final double PIVOT_Y_M = 0.0; // from zeroedPosition[1]
   private static final double PIVOT_Z_M = 0.090298; // from zeroedPosition[2]
 
-  /** If your model’s zero orientation doesn’t match code zero, add an offset (degrees). */
   private static final double WRIST_ZERO_OFFSET_DEG = 0.0;
 
-  /** Total number of animated components you want to publish (>= WRIST_COMPONENT_INDEX + 1). */
   private static final int COMPONENT_COUNT = 3; // model_0, model_1, model_2 (wrist)
 
-  // =======================
-  // Continuous angle tracking (multi-turn)
-  // =======================
   private boolean initialized = false;
   private double lastWrappedRad = 0.0; // last raw (wrapped) angle from IO, in radians
   private double continuousRad = 0.0; // unwrapped, multi-turn angle in radians
@@ -53,11 +48,6 @@ public class Wrist extends SubsystemBase {
     io.setPositionRadians(placed); // IO should NOT wrap; use multi-turn position control
   }
 
-  /**
-   * Legacy API: rotate to position in degrees (kept for compatibility). NOTE: This may take the
-   * shortest path in a single-turn domain depending on your IO. Prefer
-   * wristRotateToAbsoluteDegrees(...) for multi-turn moves like -270.
-   */
   public void wristRotateToPosition(double positionDegrees) {
     io.setPositionRadians(Rotation2d.fromDegrees(positionDegrees).getRadians());
   }
@@ -107,11 +97,9 @@ public class Wrist extends SubsystemBase {
 
     Pose3d wristPose = robotPose.plus(wristXform);
 
-    Logger.recordOutput("Wrist/ComponentPose", wristPose);
+    Logger.recordOutput("Wrist/WristPose", wristPose);
     Logger.recordOutput("Wrist/AngleDegrees", getWristAngle());
   }
-
-  // ----------------- Helpers -----------------
 
   /**
    * Place target angle (rad) in the same "scope" as reference (rad), preserving multi-turn intent.
